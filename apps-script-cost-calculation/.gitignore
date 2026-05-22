@@ -1,0 +1,5 @@
+.DS_Store
+node_modules/
+.clasprc.json
+.env
+*.log
