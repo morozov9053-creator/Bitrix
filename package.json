@@ -1,0 +1,16 @@
+{
+  "name": "disciplinary-kpi-audit",
+  "version": "1.0.0",
+  "description": "Bitrix24 disciplinary KPI auditor for deals",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "exceljs": "^4.4.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
