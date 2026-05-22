@@ -1,7 +1,7 @@
 {
   "name": "disciplinary-kpi-audit",
   "version": "1.0.0",
-  "description": "Bitrix24 disciplinary KPI auditor for deals",
+  "description": "Bitrix24 disciplinary report #1 for deal quality control",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
