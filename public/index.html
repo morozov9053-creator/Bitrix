@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Дисциплинарный KPI</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="topbar">
+        <div>
+          <p class="eyebrow">Отчет РОПа</p>
+          <h1>Дисциплинарный KPI</h1>
+        </div>
+        <div class="actions">
+          <button id="refreshBtn" type="button">Обновить</button>
+          <button id="exportBtn" type="button" class="secondary">Экспорт XLSX</button>
+        </div>
+      </section>
+
+      <section class="filters">
+        <label>
+          <span>Дата анализа</span>
+          <input id="analysisDateInput" type="date" />
+        </label>
+        <label>
+          <span>Созданы с</span>
+          <input id="dateFromInput" type="date" />
+        </label>
+        <label>
+          <span>Созданы по</span>
+          <input id="dateToInput" type="date" />
+        </label>
+        <label>
+          <span>Порог комментария, дней</span>
+          <input id="commentAgeInput" type="number" min="1" max="365" value="90" />
+        </label>
+        <label>
+          <span>Порог KPI, %</span>
+          <input id="kpiThresholdInput" type="number" min="0" max="100" step="0.1" value="90" />
+        </label>
+        <div class="manager-filter">
+          <span>Менеджеры</span>
+          <div id="managerSelect" class="manager-checkboxes"></div>
+        </div>
+      </section>
+
+      <section id="state" class="state">Загрузка данных из Битрикс24...</section>
+
+      <section id="dashboard" class="hidden">
+        <div class="metrics">
+          <article>
+            <span>Менеджеров</span>
+            <strong id="managerCount">0</strong>
+          </article>
+          <article>
+            <span>Сделок</span>
+            <strong id="totalDeals">0</strong>
+          </article>
+          <article>
+            <span>С нарушениями</span>
+            <strong id="violationDeals">0</strong>
+          </article>
+          <article>
+            <span>KPI выплачивается</span>
+            <strong id="paidManagers">0</strong>
+          </article>
+        </div>
+
+        <div class="tabs">
+          <button id="summaryTab" type="button" class="tab active">Сводная по менеджерам</button>
+          <button id="violationsTab" type="button" class="tab">Список нарушений</button>
+          <button id="callsTab" type="button" class="tab">Звонки по сделкам</button>
+        </div>
+
+        <section id="summaryPane" class="panel">
+          <div class="table-head">
+            <h2>Лист 1 — Сводная таблица</h2>
+          </div>
+          <div class="table-wrap">
+            <table class="report-table">
+              <thead>
+                <tr>
+                  <th>Менеджер</th>
+                  <th>Всего сделок</th>
+                  <th>Усл.1 Нет задачи</th>
+                  <th>Усл.2 Нет ЛПР</th>
+                  <th>Усл.2 Нет контакта</th>
+                  <th>Усл.2 Нет телефона</th>
+                  <th>Усл.2 Итого</th>
+                  <th>Усл.7 Без комментария</th>
+                  <th>Усл.7 Устарел</th>
+                  <th>Усл.7 Итого</th>
+                  <th>Всего нарушений</th>
+                  <th>Выполнено</th>
+                  <th>Корректно, %</th>
+                  <th>Порог, %</th>
+                  <th>KPI</th>
+                </tr>
+              </thead>
+              <tbody id="summaryBody"></tbody>
+            </table>
+          </div>
+          <div id="manualNotes" class="notes"></div>
+        </section>
+
+        <section id="violationsPane" class="panel hidden">
+          <div class="table-head">
+            <h2>Лист 2 — Список нарушений</h2>
+            <input id="searchInput" type="search" placeholder="Поиск по сделке, менеджеру, причине" />
+          </div>
+          <div class="table-wrap">
+            <table class="report-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Название сделки</th>
+                  <th>Менеджер</th>
+                  <th>Стадия сделки</th>
+                  <th>Нет задачи</th>
+                  <th>Нет ЛПР</th>
+                  <th>Нет контакта</th>
+                  <th>Нет телефона</th>
+                  <th>Нарушение усл.7</th>
+                  <th>Причины</th>
+                </tr>
+              </thead>
+              <tbody id="violationsBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="callsPane" class="panel hidden">
+          <div class="table-head">
+            <h2>Звонки по всем сделкам</h2>
+            <input id="callsSearchInput" type="search" placeholder="Поиск по сделке, менеджеру, звонку" />
+          </div>
+          <div class="table-wrap">
+            <table class="report-table">
+              <thead>
+                <tr>
+                  <th><button class="sort-button" type="button" data-calls-sort="id">ID</button></th>
+                  <th><button class="sort-button" type="button" data-calls-sort="title">Название сделки</button></th>
+                  <th><button class="sort-button" type="button" data-calls-sort="managerName">Менеджер</button></th>
+                  <th><button class="sort-button" type="button" data-calls-sort="stageName">Стадия сделки</button></th>
+                  <th><button class="sort-button" type="button" data-calls-sort="callCount">Разговоров</button></th>
+                  <th><button class="sort-button" type="button" data-calls-sort="lastCallAt">Дата последнего разговора</button></th>
+                  <th><button class="sort-button" type="button" data-calls-sort="lastCallDurationSeconds">Длительность</button></th>
+                  <th><button class="sort-button" type="button" data-calls-sort="lastCallSubject">Последний разговор</button></th>
+                </tr>
+              </thead>
+              <tbody id="callsBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>
