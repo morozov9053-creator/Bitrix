@@ -6,5 +6,7 @@
   "commentTextField": "ufCrm_CN_TL2CRM",
   "commentDateField": "ufCrm_CN_TL2CRM_DT",
   "earlyStageIds": ["43", "18"],
-  "activeTaskStatuses": ["2", "3", "4"]
+  "activeTaskStatuses": ["2", "3", "4"],
+  "excludedManagerIds": [],
+  "excludedManagerNames": ["Алексиков Дмитрий Игоревич"]
 }

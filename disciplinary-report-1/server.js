@@ -16,6 +16,8 @@ const DEFAULT_CONFIG = {
   commentDateField: "ufCrm_CN_TL2CRM_DT",
   earlyStageIds: ["43", "18"],
   activeTaskStatuses: ["2", "3", "4"],
+  excludedManagerIds: [],
+  excludedManagerNames: ["Алексиков Дмитрий Игоревич"],
   manualConditions: [
     "Условие 3: сделки находятся на актуальных стадиях — требует экспертной оценки РОПа.",
     "Условие 4: перенос сроков задач более 3 раз — история переносов отсутствует в выгрузке.",
@@ -95,6 +97,16 @@ function fullName(user) {
     .filter(Boolean)
     .join(" ")
     .trim() || `Пользователь #${user.id || user.ID}`;
+}
+
+function normalizePersonName(value) {
+  return String(value || "").replace(/\s+/g, " ").trim().toLowerCase();
+}
+
+function isExcludedManager(row, config) {
+  const excludedIds = new Set((config.excludedManagerIds || []).map(String));
+  const excludedNames = new Set((config.excludedManagerNames || []).map(normalizePersonName));
+  return excludedIds.has(String(row.managerId)) || excludedNames.has(normalizePersonName(row.managerName));
 }
 
 function stageEntityId(categoryId) {
@@ -565,7 +577,7 @@ async function buildAudit(query) {
     analysisDate,
     commentMaxAgeDays,
     activeTaskStatuses
-  }));
+  })).filter((row) => !isExcludedManager(row, config));
   const managers = aggregateManagers(rows, kpiThreshold);
   const violations = rows.filter((row) => row.hasViolation)
     .sort((a, b) => a.managerName.localeCompare(b.managerName, "ru") || Number(b.id) - Number(a.id));
@@ -636,7 +648,7 @@ async function buildCallsReport(query) {
       lastCallDurationText: callStats.lastCallDurationText || "",
       lastCallSubject: callStats.lastCallSubject || ""
     };
-  });
+  }).filter((row) => !isExcludedManager(row, config));
   return { generatedAt: new Date().toISOString(), calls: sortCallRows(calls) };
 }
 
