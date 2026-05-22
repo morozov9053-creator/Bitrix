@@ -1,0 +1,10 @@
+{
+  "dealLimit": 5000,
+  "pipelineCategoryId": 0,
+  "commentMaxAgeDays": 90,
+  "lprField": "ufCrm_1683105491",
+  "commentTextField": "ufCrm_CN_TL2CRM",
+  "commentDateField": "ufCrm_CN_TL2CRM_DT",
+  "earlyStageIds": ["43", "18"],
+  "activeTaskStatuses": ["2", "3", "4"]
+}
