@@ -1,0 +1,15 @@
+{
+  "name": "morozov-kite",
+  "version": "1.0.0",
+  "description": "Сайт кайт-школы Морозофф Кайт в Анапе с приемом заявок.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "kite",
+    "anapa",
+    "school"
+  ],
+  "license": "UNLICENSED"
+}
